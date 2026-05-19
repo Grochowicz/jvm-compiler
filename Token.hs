@@ -1,16 +1,21 @@
 module Token where
 
+
+
 data Token
-  = NUM Double
+  = LITInt Integer
+  | LITDouble Double
   | ID String
-  | LET
-  | IN
-  | ADD
-  | SUB
-  | MUL
-  | DIV
-  | LPAR
-  | RPAR
-  | ASSIGN
+  | OPAdd
+  | OPSub
+  | OPMul
+  | OPDiv
+  | OPAtrib
+  | LPar
+  | RPar
+  | TInt 
+  | TDouble
+  | TVoid
+  | TString
   deriving (Eq, Show)
   

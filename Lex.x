@@ -9,22 +9,33 @@ import Token
 $digit = [0-9]          -- digits
 $letter = [A-Za-z]
 @id = $letter($letter|$digit|_|')* 
-@num = $digit+(\.$digit+)?
+
+-- nao separa entre int e double
+@literal_int = ($digit)+
+@literal_double = $digit+(\.$digit+)? -- nao permite .3 -> 0.3
 
 tokens :-
 
 <0> $white+ ;
-<0> @num  {\s -> NUM (read s)}
-<0> "let" {\s -> LET}
-<0> "in"  {\s -> IN}
 <0> @id   {\s -> ID s}
-<0> "="   {\s -> ASSIGN}
-<0> "+"   {\s -> ADD}  
-<0> "-"   {\s -> SUB}  
-<0> "*"   {\s -> MUL}  
-<0> "/"   {\s -> DIV}  
-<0> "("   {\s -> LPAR}  
-<0> ")"   {\s -> RPAR}  
+
+<0> @literal_int {\s -> LITInt (read s)}
+<0> @literal_double {\s -> LITDouble (read s)}
+
+<0> "="   {\s -> OPAtrib}
+<0> "+"   {\s -> OPAdd}  
+<0> "-"   {\s -> OPSub}  
+<0> "*"   {\s -> OPMul}  
+<0> "/"   {\s -> OPDiv}  
+
+<0> "("   {\s -> LPar}  
+<0> ")"   {\s -> RPar}  
+
+<0> "int" {\s -> TInt} 
+<0> "double" {\s -> TDouble} 
+<0> "void" {\s -> TVoid} 
+<0> "string" {\s -> TString} 
+
 
 {
 -- As acoes tem tipo :: String -> Token
