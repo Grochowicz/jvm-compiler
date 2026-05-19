@@ -19,7 +19,7 @@ data ExprR = Req Expr Expr | Rdif Expr Expr | Rlt Expr Expr
 data ExprL = And ExprL ExprL | Or ExprL ExprL | Not ExprL
 	| Rel ExprR deriving Show
 
-data Var = Id :#: ( Tipo , Int ) deriving Show
+data Var = Id :#: ( Tipo , Integer ) deriving Show
 
 data Funcao = Id :->: ([ Var ] , Tipo ) deriving Show
 

@@ -29,6 +29,11 @@ import qualified Lex as L
 	TString {Token.TString}
 
 %%
+Decl	: Type ID OPAtrib LITInt {$2 :#: ($1, $4)}
+
+Type	: TInt {$1}
+			| TDouble {$1}
+
 Exp   : Expr {$1} 
 
 Expr  : Expr OPAdd Term       {AST.Add $1 $3}
