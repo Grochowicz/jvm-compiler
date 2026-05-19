@@ -6,4 +6,4 @@ all:
 	$(HAPPY) Parser.y
 
 clean:
-	rm Lex.hs Parser.hs
+	rm Lex.hs Parser.hs *.hi *.o

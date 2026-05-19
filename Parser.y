@@ -3,7 +3,7 @@ module Parser where
 
 import Token
 import AST
-import Eval
+--import Eval
 import qualified Lex as L
 
 }
@@ -13,34 +13,36 @@ import qualified Lex as L
 %tokentype { Token }
 %error { parseError }
 %token 
-  let {LET}
-  in  {IN}
-  '+' {ADD}
-  '-' {SUB}
-  '*' {MUL}
-  '/' {DIV}
-  '(' {LPAR}
-  ')' {RPAR}
-  '=' {ASSIGN}
-  Num {NUM $$}
-  Id  {ID $$}
-
+	LITInt {Token.LITInt $$}
+	LITDouble {Token.LITDouble $$}
+	ID  {Token.ID $$}
+	OPAdd {Token.OPAdd}
+	OPSub {Token.OPSub}
+	OPMul {Token.OPMul}
+	OPDiv {Token.OPDiv}
+	OPAtrib {Token.OPAtrib}
+	LPar {Token.LPar}
+	RPar {Token.RPar}
+	TInt {Token.TInt}
+	TDouble {Token.TDouble}
+	TVoid {Token.TVoid}
+	TString {Token.TString}
 
 %%
-Exp   : let Id '=' Expr in Exp {Let $2 $4 $6} 
-      | Expr {$1} 
+Exp   : Expr {$1} 
 
-Expr  : Expr '+' Term       {Add $1 $3}
-      | Expr '-' Term       {Sub $1 $3}
+Expr  : Expr OPAdd Term       {AST.Add $1 $3}
+      | Expr OPSub Term       {AST.Sub $1 $3}
       | Term                {$1}
 
-Term  : Term  '*' Factor    {Mul $1 $3}
-      | Term '/' Factor     {Div $1 $3}
+Term  : Term  OPMul Factor    {AST.Mul $1 $3}
+      | Term OPDiv Factor     {AST.Div $1 $3}
       | Factor              {$1}
 
-Factor : Num                {Const $1}
-       | Id                 {Var $1}
-       | '(' Expr ')'       {$2}      
+Factor : LITInt                {AST.Const (AST.CInt $1)}
+       | LITDouble                 {AST.Const (AST.CDouble $1)}
+       | ID                 {AST.IdVar $1}
+       | LPar Expr RPar       {$2}      
 
 
 {
@@ -51,5 +53,5 @@ main = do putStr "Expressão:"
           s <- getLine
           let a = calc (L.alexScanTokens s)
           print a
-          print (eval [] a)
+          -- print (eval [] a)
 }
