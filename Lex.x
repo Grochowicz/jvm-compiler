@@ -8,7 +8,8 @@ import Token
 
 $digit = [0-9]          -- digits
 $letter = [A-Za-z]
-@id = $letter($letter|$digit|_|')* 
+--@id = $letter($letter|$digit|_|')* 
+@id = $letter [$letter $digit _ ']*
 
 -- nao separa entre int e double
 @literal_int = ($digit)+
@@ -16,6 +17,10 @@ $letter = [A-Za-z]
 
 tokens :-
 
+<0> "int" {\s -> TInt} 
+<0> "double" {\s -> TDouble} 
+<0> "void" {\s -> TVoid} 
+<0> "string" {\s -> TString} 
 <0> $white+ ;
 <0> @id   {\s -> ID s}
 
@@ -31,10 +36,13 @@ tokens :-
 <0> "("   {\s -> LPar}  
 <0> ")"   {\s -> RPar}  
 
-<0> "int" {\s -> TInt} 
-<0> "double" {\s -> TDouble} 
-<0> "void" {\s -> TVoid} 
-<0> "string" {\s -> TString} 
+<0> ";"   {\s -> PVirg}
+<0> ","   {\s -> Virg}
+
+
+
+
+--<0> "if" {\s -> }
 
 
 {

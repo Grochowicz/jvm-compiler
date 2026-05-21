@@ -17,5 +17,7 @@ data Token
   | TDouble
   | TVoid
   | TString
+  | PVirg
+  | Virg
   deriving (Eq, Show)
   

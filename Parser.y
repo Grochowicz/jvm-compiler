@@ -27,12 +27,21 @@ import qualified Lex as L
 	TDouble {Token.TDouble}
 	TVoid {Token.TVoid}
 	TString {Token.TString}
+    PVirg {Token.PVirg}
+    Virg {Token.Virg}
 
 %%
-Decl	: Type ID OPAtrib LITInt {$2 :#: ($1, $4)}
+Decls : Decls Decl   { $1 ++ $2 }
+      | Decl         { $1 }
 
-Type	: TInt {$1}
-			| TDouble {$1}
+Decl  : Type ListaId PVirg   { map (\i -> i :#: ($1, 0)) $2 }
+
+ListaId : ListaId Virg ID    { $1 ++ [$3] }
+        | ID                 { [$1] }
+
+Type	: TInt {AST.TInt}
+	    | TDouble {AST.TDouble}
+        | TString {AST.TString}
 
 Exp   : Expr {$1} 
 
