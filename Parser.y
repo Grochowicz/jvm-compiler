@@ -31,10 +31,20 @@ import qualified Lex as L
     Virg {Token.Virg}
 
 %%
+Programa : Decls Comandos { AST.Prog $1 $2 }
+
+Comandos : Comandos Comando { $1 ++ [$2] }
+				 | Comando { [$1] }
+
+Comando : Atrib { $1 }
+
+Atrib : ID OPAtrib Exp PVirg {AST.Atrib $1 $3}
+
 Decls : Decls Decl   { $1 ++ $2 }
       | Decl         { $1 }
 
 Decl  : Type ListaId PVirg   { map (\i -> i :#: ($1, 0)) $2 }
+
 
 ListaId : ListaId Virg ID    { $1 ++ [$3] }
         | ID                 { [$1] }
