@@ -23,10 +23,9 @@ data Var = Id :#: ( Tipo , Integer ) deriving Show
 
 data Funcao = Id :->: ([ Var ] , Tipo ) deriving Show
 
-data Programa = Prog [ Var ] Bloco deriving Show
-
---data Programa = Prog [ Funcao ] [( Id , [ Var ] , Bloco )] [ Var ] Bloco
---	deriving Show
+data Programa = Prog [ Funcao ] [ Var ] Bloco
+	deriving Show
+--data Programa = Prog [ Var ] Bloco deriving Show
 
 type Bloco = [ Comando ]
 

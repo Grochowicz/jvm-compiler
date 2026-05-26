@@ -28,6 +28,7 @@ tokens :-
 <0> "return"  {\s -> KwReturn}
 <0> "print"   {\s -> KwPrint}
 <0> "read"    {\s -> KwRead}
+<0> "function" {\s -> KwFunction}
 
 <0> @id   {\s -> ID s}
 
