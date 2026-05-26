@@ -32,13 +32,17 @@ import qualified Lex as L
 	OPLe {Token.OPLe}
 	OPGe {Token.OPGe}
 	OPEq {Token.OPEq}
-	OPNe{Token.OPNe}
+	OPNe {Token.OPNe}
+	OPAnd {Token.OPAnd}
+	OPOr {Token.OPOr}
+	OPNot {Token.OPNot}
   PVirg {Token.PVirg}
   Virg {Token.Virg}
 
 %%
-Programa : Decls Bloco { AST.Prog $1 $2 }
-				 | Bloco { AST.Prog [] $1 }
+Programa : ExprL {$1}
+--Programa : Decls Bloco { AST.Prog $1 $2 }
+--				 | Bloco { AST.Prog [] $1 }
 
 Bloco : Bloco Comando { $1 ++ [$2] }
 		  | Comando { [$1] }
@@ -46,6 +50,11 @@ Bloco : Bloco Comando { $1 ++ [$2] }
 Comando : Atrib { $1 }
 
 Atrib : ID OPAtrib Expr PVirg {AST.Atrib $1 $3}
+
+ExprL : ExprL OPAnd ExprL {AST.And $1 $3}
+			| ExprL OPOr ExprL {AST.Or $1 $3}
+			| OPNot ExprL {AST.Not $2}
+			| ExprR {AST.Rel $1}
 
 ExprR : Expr OPLt Expr {AST.Rlt $1 $3}
 			| Expr OPGt Expr {AST.Rgt $1 $3}
