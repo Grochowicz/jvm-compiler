@@ -40,6 +40,7 @@ import qualified Lex as L
 	KwElse {Token.KwElse}
 	KwWhile {Token.KwWhile}
 	KwRead {Token.KwRead}
+	KwPrint {Token.KwPrint}
   PVirg {Token.PVirg}
   Virg {Token.Virg}
 
@@ -54,6 +55,7 @@ Comando : If { $1}
 				| While { $1 }
 				| Atrib { $1 }
 				| Read { $1 }
+				| Print { $1 }
 
 If: KwIf LPar ExprL RPar Bloco KwElse Bloco {AST.If $3 $5 $7}
 
@@ -61,7 +63,9 @@ While : KwWhile LPar ExprL RPar Bloco {AST.While $3 $5}
 
 Atrib : ID OPAtrib Expr PVirg {AST.Atrib $1 $3}
 
-Read : KwRead ID PVirg {AST.Leitura $2}
+Read : KwRead LPar ID RPar PVirg {AST.Leitura $3}
+
+Print : KwPrint LPar Expr RPar PVirg {AST.Imp $3}
 
 ExprL : ExprL OPAnd ExprL {AST.And $1 $3}
 			| ExprL OPOr ExprL {AST.Or $1 $3}
