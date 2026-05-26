@@ -31,10 +31,10 @@ import qualified Lex as L
     Virg {Token.Virg}
 
 %%
-Programa : Decls Comandos { AST.Prog $1 $2 }
+Programa : Decls Bloco { AST.Prog $1 $2 }
 
-Comandos : Comandos Comando { $1 ++ [$2] }
-				 | Comando { [$1] }
+Bloco : Bloco Comando { $1 ++ [$2] }
+		  | Comando { [$1] }
 
 Comando : Atrib { $1 }
 
