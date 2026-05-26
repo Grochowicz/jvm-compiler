@@ -38,14 +38,13 @@ tokens :-
 <0> "<="  {\s -> OPLe}
 <0> ">="  {\s -> OPGe}
 <0> "=="  {\s -> OPEq}
-<0> "/="  {\s -> OPDif}
+<0> "/="  {\s -> OPNe}
 <0> "<"   {\s -> OPLt}
 <0> ">"   {\s -> OPGt}
 
 <0> "&&"  {\s -> OPAnd}
 <0> "||"  {\s -> OPOr}
 <0> "!"   {\s -> OPNot}
-
 
 <0> "="   {\s -> OPAtrib}
 <0> "+"   {\s -> OPAdd}  
@@ -60,8 +59,6 @@ tokens :-
 
 <0> ";"   {\s -> PVirg}
 <0> ","   {\s -> Virg}
-
-
 
 {
 -- As acoes tem tipo :: String -> Token

@@ -3,39 +3,39 @@ module Token where
 data Token
   = LITInt Integer
   | LITDouble Double
-  | LITString String       -- NEW: string literals like "hello"
+  | LITString String
   | ID String
-  -- Arithmetic operators
+  -- aritmética
   | OPAdd
   | OPSub
   | OPMul
   | OPDiv
   | OPAtrib
-  -- Relational operators (NEW)
-  | OPLt        -- 
+  -- relação
+  | OPLt        -- <
   | OPGt        -- >
   | OPLe        -- <=
   | OPGe        -- >=
   | OPEq        -- ==
-  | OPDif       -- /=
-  -- Logical operators (NEW)
+  | OPNe        -- /=
+  -- lógica
   | OPAnd       -- &&
   | OPOr        -- ||
   | OPNot       -- !
-  -- Delimiters
+  -- parentesis etc
   | LPar
   | RPar
-  | LBrace      -- NEW: {
-  | RBrace      -- NEW: }
-  -- Types
+  | LBrace
+  | RBrace
+  -- tipos
   | TInt
   | TDouble
   | TVoid
   | TString
-  -- Punctuation
+  -- pontuação
   | PVirg
   | Virg
-  -- Keywords (NEW)
+  -- keywords
   | KwIf
   | KwElse
   | KwWhile

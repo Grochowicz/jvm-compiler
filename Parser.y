@@ -27,33 +27,44 @@ import qualified Lex as L
 	TDouble {Token.TDouble}
 	TVoid {Token.TVoid}
 	TString {Token.TString}
-    PVirg {Token.PVirg}
-    Virg {Token.Virg}
+	OPLt {Token.OPLt}
+	OPGt {Token.OPGt}
+	OPLe {Token.OPLe}
+	OPGe {Token.OPGe}
+	OPEq {Token.OPEq}
+	OPNe{Token.OPNe}
+  PVirg {Token.PVirg}
+  Virg {Token.Virg}
 
 %%
 Programa : Decls Bloco { AST.Prog $1 $2 }
+				 | Bloco { AST.Prog [] $1 }
 
 Bloco : Bloco Comando { $1 ++ [$2] }
 		  | Comando { [$1] }
 
 Comando : Atrib { $1 }
 
-Atrib : ID OPAtrib Exp PVirg {AST.Atrib $1 $3}
+Atrib : ID OPAtrib Expr PVirg {AST.Atrib $1 $3}
+
+ExprR : Expr OPLt Expr {AST.Rlt $1 $3}
+			| Expr OPGt Expr {AST.Rgt $1 $3}
+			| Expr OPLe Expr {AST.Rle $1 $3}
+			| Expr OPGe Expr {AST.Rge $1 $3}
+			| Expr OPEq Expr {AST.Req $1 $3}
+			| Expr OPNe Expr {AST.Rdif $1 $3}
 
 Decls : Decls Decl   { $1 ++ $2 }
       | Decl         { $1 }
 
 Decl  : Type ListaId PVirg   { map (\i -> i :#: ($1, 0)) $2 }
 
-
 ListaId : ListaId Virg ID    { $1 ++ [$3] }
         | ID                 { [$1] }
 
 Type	: TInt {AST.TInt}
 	    | TDouble {AST.TDouble}
-        | TString {AST.TString}
-
-Exp   : Expr {$1} 
+      | TString {AST.TString}
 
 Expr  : Expr OPAdd Term       {AST.Add $1 $3}
       | Expr OPSub Term       {AST.Sub $1 $3}
@@ -67,7 +78,6 @@ Factor : LITInt                {AST.Const (AST.CInt $1)}
        | LITDouble                 {AST.Const (AST.CDouble $1)}
        | ID                 {AST.IdVar $1}
        | LPar Expr RPar       {$2}      
-
 
 {
 parseError :: [Token] -> a
