@@ -38,6 +38,7 @@ import qualified Lex as L
 	OPNot {Token.OPNot}
 	KwIf {Token.KwIf}
 	KwElse {Token.KwElse}
+	KwWhile {Token.KwWhile}
   PVirg {Token.PVirg}
   Virg {Token.Virg}
 
@@ -49,6 +50,7 @@ Bloco : Bloco Comando { $1 ++ [$2] }
 		  | Comando { [$1] }
 
 Comando : KwIf LPar ExprL RPar Bloco KwElse Bloco {AST.If $3 $5 $7}
+				| KwWhile LPar ExprL RPar Bloco {AST.While $3 $5}
 				| Atrib { $1 }
 
 Atrib : ID OPAtrib Expr PVirg {AST.Atrib $1 $3}
