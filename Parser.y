@@ -40,9 +40,8 @@ import qualified Lex as L
   Virg {Token.Virg}
 
 %%
-Programa : ExprL {$1}
---Programa : Decls Bloco { AST.Prog $1 $2 }
---				 | Bloco { AST.Prog [] $1 }
+Programa : Decls Bloco { AST.Prog $1 $2 }
+				 | Bloco { AST.Prog [] $1 }
 
 Bloco : Bloco Comando { $1 ++ [$2] }
 		  | Comando { [$1] }
