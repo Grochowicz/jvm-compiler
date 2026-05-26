@@ -47,7 +47,6 @@ import qualified Lex as L
 
 %%
 Programa : Decls Bloco { AST.Prog $1 $2 }
-				 | Bloco { AST.Prog [] $1 }
 
 Bloco : Bloco Comando { $1 ++ [$2] }
 		  | Comando { [$1] }
@@ -85,7 +84,7 @@ ExprR : Expr OPLt Expr {AST.Rlt $1 $3}
 			| Expr OPNe Expr {AST.Rdif $1 $3}
 
 Decls : Decls Decl   { $1 ++ $2 }
-      | Decl         { $1 }
+      |							 { [] }
 
 Decl  : Type ListaId PVirg   { map (\i -> i :#: ($1, 0)) $2 }
 
