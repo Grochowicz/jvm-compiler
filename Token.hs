@@ -42,5 +42,5 @@ data Token
   | KwReturn
   | KwPrint
   | KwRead
-  | KwFunction
   deriving (Eq, Show)
+  -- | KwFunction
