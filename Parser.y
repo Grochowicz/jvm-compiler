@@ -163,8 +163,8 @@ Factor : LITInt              { AST.Const (AST.CInt $1) }
 parseError :: [Token] -> a
 parseError s = error ("Parse error: " ++ show s)
 
-main :: IO ()
-main = do
-  s <- readFile "teste.j--"
-  print (calc (L.alexScanTokens s))
-}
+--main :: IO ()
+--main = do
+--  s <- readFile "test_menor.j--"
+--  print (calc (L.alexScanTokens s))
+--}

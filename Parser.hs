@@ -856,10 +856,11 @@ happySeq = happyDontSeq
 parseError :: [Token] -> a
 parseError s = error ("Parse error: " ++ show s)
 
-main :: IO ()
-main = do
-  s <- readFile "teste.j--"
-  print (calc (L.alexScanTokens s))
+--main :: IO ()
+--main = do
+--  s <- readFile "test_menor.j--"
+--  print (calc (L.alexScanTokens s))
+--
 -- $Id: GenericTemplate.hs,v 1.26 2005/01/14 14:47:22 simonmar Exp $
 
 #if !defined(__GLASGOW_HASKELL__)
