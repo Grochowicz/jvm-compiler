@@ -3,4 +3,9 @@
 # vim swap backup file
 .*.swp
 
-
+# clean
+Lex.hs
+Parser.hs
+*.hi
+*.o
+compilador
