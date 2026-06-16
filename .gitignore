@@ -1,3 +1,6 @@
 # vim undofile
 .*.un~
+# vim swap backup file
 .*.swp
+
+
