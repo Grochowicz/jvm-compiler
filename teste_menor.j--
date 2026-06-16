@@ -1,0 +1,11 @@
+{
+    string s; 
+    string t; 
+    int a; 
+
+    s = "abc"; 
+
+    if (s <= t) {
+        print(s); 
+    }
+}

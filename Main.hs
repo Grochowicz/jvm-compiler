@@ -7,7 +7,7 @@ import ErrorMonad
 
 main :: IO ()
 main = do
-  s <- readFile "teste.j--"
+  s <- readFile "teste_menor.j--"
   let ast = calc (L.alexScanTokens s)
   let Result (temErro, msgs, astNova) = verPrograma ast
   putStr msgs

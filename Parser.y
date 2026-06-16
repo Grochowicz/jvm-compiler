@@ -107,6 +107,7 @@ If: KwIf LPar ExprL RPar Bloco {AST.If $3 $5 []}
 While : KwWhile LPar ExprL RPar Bloco {AST.While $3 $5}
 
 Atrib : ID OPAtrib Expr PVirg {AST.Atrib $1 $3}
+      | ID OPAtrib LITString PVirg {AST.Atrib $1 (AST.Lit $3)}
 
 Print : KwPrint LPar Expr RPar PVirg {AST.Imp $3}
       | KwPrint LPar LITString RPar PVirg {AST.Imp (AST.Lit $3) }
