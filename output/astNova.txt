@@ -1,0 +1,1 @@
+Prog [] [] ["x" :#: (TInt,0)] [While (Rel (Rlt (IdVar "x") (Const (CInt 1)))) [Atrib "x" (Const (CInt 10))],Ret Nothing]
