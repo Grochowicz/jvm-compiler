@@ -10,7 +10,7 @@ Lex.hs: Lex.x
 Parser.hs: Parser.y
 	$(HAPPY) Parser.y
 
-compilador: Lex.hs Parser.hs Token.hs AST.hs ErrorMonad.hs Semantico.hs Main.hs
+compilador: Lex.hs Parser.hs Token.hs AST.hs ErrorMonad.hs Semantico.hs Gerador.hs Main.hs
 	$(GHC) -o compilador Main.hs
 
 clean:

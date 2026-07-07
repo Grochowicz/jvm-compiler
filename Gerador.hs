@@ -3,33 +3,14 @@ module Gerador where
 import AST
 import Control.Monad.State
 
--- =====================================================================
--- Geracao de codigo assembly (Jasmin) para a JVM.
---
--- Convencoes (seguindo o esqueleto dado em aula):
---   c   = nome da classe gerada
---   tab = tabela de simbolos locais [Var], com enderecos ja atribuidos
---   fun = lista de assinaturas [Funcao] (para descritores de chamada)
---   v   = label para onde saltar se a expressao logica for VERDADEIRA
---   f   = label para onde saltar se a expressao logica for FALSA
---
--- A analise semantica ja inseriu os nos de coercao IntDouble/DoubleInt,
--- entao aqui os dois operandos de toda operacao binaria ja tem o mesmo
--- tipo; IntDouble vira i2d e DoubleInt vira d2i.
--- =====================================================================
-
 novoLabel :: State Int String
 novoLabel = do {n <- get; put (n+1); return ("l" ++ show n)}
 
--- ---------------------------------------------------------------------
--- Cabecalhos
--- ---------------------------------------------------------------------
 
 genCab nome = return (".class public " ++ nome ++
                       "\n.super java/lang/Object\n" ++
                       "\n.field public static _sc Ljava/util/Scanner;\n" ++
                       "\n.method public <init>()V\n\taload_0\n\tinvokenonvirtual java/lang/Object/<init>()V\n\treturn\n.end method\n\n" ++
-                      -- inicializa o Scanner usado pelos comandos read()
                       ".method static <clinit>()V\n\t.limit stack 3\n" ++
                       "\tnew java/util/Scanner\n\tdup\n" ++
                       "\tgetstatic java/lang/System/in Ljava/io/InputStream;\n" ++
@@ -47,15 +28,13 @@ genFunCab c fun nome s l =
              "\n\t.limit stack " ++ show s ++
              "\n\t.limit locals " ++ show l ++ "\n\n")
 
--- ---------------------------------------------------------------------
--- Tabela de simbolos / enderecamento
--- ---------------------------------------------------------------------
+
+
 
 tamanho :: Tipo -> Integer
-tamanho TDouble = 2      -- double ocupa 2 slots na JVM
+tamanho TDouble = 2     
 tamanho _       = 1
 
--- atribui enderecos (slots) as variaveis, a partir de n
 enderecar :: Integer -> [Var] -> ([Var], Integer)
 enderecar n []                    = ([], n)
 enderecar n ((x :#: (t, _)) : vs) = let (vs', fim) = enderecar (n + tamanho t) vs
@@ -69,7 +48,6 @@ lookupFun :: Id -> [Funcao] -> Maybe ([Var], Tipo)
 lookupFun _ [] = Nothing
 lookupFun x ((g :->: sig) : gs) = if x == g then Just sig else lookupFun x gs
 
--- descritor JVM de tipos e assinaturas
 jtipo :: Tipo -> String
 jtipo TInt    = "I"
 jtipo TDouble = "D"
@@ -118,11 +96,8 @@ genRel TInt    TInt    v op = "\tif_icmp" ++ op ++ " " ++ v ++ "\n"
 genRel TDouble TDouble v op = "\tdcmpg\n\tif" ++ op ++ " " ++ v ++ "\n"
 genRel TString TString v op = "\tinvokevirtual java/lang/String/compareTo(Ljava/lang/String;)I\n" ++
                               "\tif" ++ op ++ " " ++ v ++ "\n"
-genRel _ _ v op = "\tif_icmp" ++ op ++ " " ++ v ++ "\n"   -- nao ocorre apos a semantica
+genRel _ _ v op = "\tif_icmp" ++ op ++ " " ++ v ++ "\n"   
 
--- ---------------------------------------------------------------------
--- Expressoes aritmeticas: retornam (Tipo, codigo) e deixam o valor na pilha
--- ---------------------------------------------------------------------
 
 genExpr :: String -> [Var] -> [Funcao] -> Expr -> State Int (Tipo, String)
 genExpr c tab fun (Const (CInt i))    = return (TInt,    genInt i)
@@ -151,11 +126,8 @@ genExpr c tab fun (Chamada g args) = do
 genBin c tab fun e1 e2 op = do
   (t1, e1') <- genExpr c tab fun e1
   (t2, e2') <- genExpr c tab fun e2
-  return (t1, e1' ++ e2' ++ genOp t1 op)     -- t1 == t2 apos a semantica
+  return (t1, e1' ++ e2' ++ genOp t1 op)    
 
--- ---------------------------------------------------------------------
--- Expressoes relacionais: saltam para v se verdadeiro, caem em "goto f"
--- ---------------------------------------------------------------------
 
 genExprR :: String -> [Var] -> [Funcao] -> String -> String -> ExprR -> State Int String
 genExprR c tab fun v f (Req  e1 e2) = genRelExpr c tab fun v f e1 e2 "eq"
@@ -170,30 +142,26 @@ genRelExpr c tab fun v f e1 e2 op = do
   (t2, e2') <- genExpr c tab fun e2
   return (e1' ++ e2' ++ genRel t1 t2 v op ++ "\tgoto " ++ f ++ "\n")
 
--- ---------------------------------------------------------------------
--- Expressoes logicas com curto-circuito
--- ---------------------------------------------------------------------
+
 
 genExprL :: String -> [Var] -> [Funcao] -> String -> String -> ExprL -> State Int String
 genExprL c tab fun v f (And e1 e2) = do
   l1  <- novoLabel
-  e1' <- genExprL c tab fun l1 f e1     -- se e1 falso, curto-circuito para f
+  e1' <- genExprL c tab fun l1 f e1     
   e2' <- genExprL c tab fun v  f e2
   return (e1' ++ l1 ++ ":\n" ++ e2')
 
 genExprL c tab fun v f (Or e1 e2) = do
   l1  <- novoLabel
-  e1' <- genExprL c tab fun v l1 e1     -- se e1 verdadeiro, curto-circuito para v
+  e1' <- genExprL c tab fun v l1 e1 
   e2' <- genExprL c tab fun v f  e2
   return (e1' ++ l1 ++ ":\n" ++ e2')
 
-genExprL c tab fun v f (Not e) = genExprL c tab fun f v e    -- inverte os destinos
+genExprL c tab fun v f (Not e) = genExprL c tab fun f v e   
 
 genExprL c tab fun v f (Rel r) = genExprR c tab fun v f r
 
--- ---------------------------------------------------------------------
--- Comandos
--- ---------------------------------------------------------------------
+
 
 genCmd :: String -> [Var] -> [Funcao] -> Comando -> State Int String
 
@@ -246,18 +214,16 @@ genCmd c tab fun (Proc g args) = do
   (tret, code) <- genExpr c tab fun (Chamada g args)
   let descarta = case tret of
                    TVoid   -> ""
-                   TDouble -> "\tpop2\n"       -- descarta retorno nao usado
+                   TDouble -> "\tpop2\n"
                    _       -> "\tpop\n"
   return (code ++ descarta)
 
 genBloco :: String -> [Var] -> [Funcao] -> Bloco -> State Int String
 genBloco c tab fun b = do {cs <- mapM (genCmd c tab fun) b; return (concat cs)}
 
--- ---------------------------------------------------------------------
--- Funcoes e programa
--- ---------------------------------------------------------------------
 
--- return "de seguranca" no fim do metodo (codigo morto se ja houver return)
+
+
 retornoFinal :: Tipo -> String
 retornoFinal TVoid   = "\treturn\n"
 retornoFinal TInt    = "\ticonst_0\n\tireturn\n"
@@ -266,7 +232,7 @@ retornoFinal TString = "\tldc \"\"\n\tareturn\n"
 
 genFuncao :: String -> [Funcao] -> (Id, [Var], Bloco) -> State Int String
 genFuncao c fun (nome, vars, bloco) = do
-  let (tab, nlocais) = enderecar 0 vars       -- parametros ja vem no inicio de vars
+  let (tab, nlocais) = enderecar 0 vars       
   let Just (_, tret) = lookupFun nome fun
   cab   <- genFunCab c fun nome 20 nlocais
   corpo <- genBloco c tab fun bloco
@@ -274,7 +240,7 @@ genFuncao c fun (nome, vars, bloco) = do
 
 genMain :: String -> [Funcao] -> [Var] -> Bloco -> State Int String
 genMain c fun vars bloco = do
-  let (tab, nlocais) = enderecar 1 vars       -- slot 0 = args de main
+  let (tab, nlocais) = enderecar 1 vars     
   cab   <- genMainCab 20 nlocais
   corpo <- genBloco c tab fun bloco
   return (cab ++ corpo ++ "\treturn\n.end method\n")

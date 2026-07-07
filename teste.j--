@@ -11,7 +11,7 @@ int fat (int n)
 {
   int f;
   
-  f = 0;
+  f = 1; 
   while (n > 0)
   { 
     f = f * n;
@@ -49,8 +49,7 @@ void imprimir(string s, double r)
   
   print("Numero:");
   read (num);
-  x = fat (4.5);
-  a = maior (2.5, 10);
-  imprimir("teste:", 1);
+  x = fat (num);
+  imprimir("teste:", x);
   return;
 }
