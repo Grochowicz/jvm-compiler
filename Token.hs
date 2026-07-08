@@ -6,6 +6,7 @@ data Token
   | LITString String
   | ID String
   -- aritmética
+  | OPMinusEq
   | OPAdd
   | OPSub
   | OPMul
@@ -42,5 +43,6 @@ data Token
   | KwReturn
   | KwPrint
   | KwRead
+  | KwDo
   deriving (Eq, Show)
   -- | KwFunction

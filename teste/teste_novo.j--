@@ -1,0 +1,21 @@
+int fat (int n)
+{
+  int f;
+  
+  f = 1; 
+  do
+  { 
+    f = f * n;
+    n -= 1;
+  } while (n > 0);
+  return f;
+}
+
+{
+int x; 
+int a; 
+  x = fat (5);
+  print(x); 
+  return;
+}
+

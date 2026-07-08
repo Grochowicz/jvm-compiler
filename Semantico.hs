@@ -140,6 +140,12 @@ verComando g ret l (While c b) = do
   b' <- verBloco g ret l b
   pure (While c' b')
 
+verComando g ret l (DoWhile b c) = do
+  c' <- verExprL g l c
+  b' <- verBloco g ret l b
+  pure (DoWhile b' c')
+
+
 verComando _ ret _ (Ret Nothing) =
   case ret of
     TVoid -> pure (Ret Nothing)

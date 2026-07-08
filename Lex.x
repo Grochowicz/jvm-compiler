@@ -28,6 +28,7 @@ tokens :-
 <0> "return"  {\s -> KwReturn}
 <0> "print"   {\s -> KwPrint}
 <0> "read"    {\s -> KwRead}
+<0> "do"    {\s -> KwDo}
 
 <0> @id   {\s -> ID s}
 
@@ -46,6 +47,7 @@ tokens :-
 <0> "||"  {\s -> OPOr}
 <0> "!"   {\s -> OPNot}
 
+<0> "-="   {\s -> OPMinusEq}  
 <0> "="   {\s -> OPAtrib}
 <0> "+"   {\s -> OPAdd}  
 <0> "-"   {\s -> OPSub}  

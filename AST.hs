@@ -30,6 +30,7 @@ type Bloco = [ Comando ]
 
 data Comando = If ExprL Bloco Bloco
 	| While ExprL Bloco
+	| DoWhile Bloco ExprL
 	| Atrib Id Expr
 	| Leitura Id
 	| Imp Expr

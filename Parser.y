@@ -17,6 +17,7 @@ import qualified Lex as L
 	LITDouble {Token.LITDouble $$}
     LITString {Token.LITString $$}
 	ID  {Token.ID $$}
+	OPMinusEq {Token.OPMinusEq}
 	OPAdd {Token.OPAdd}
 	OPSub {Token.OPSub}
 	OPMul {Token.OPMul}
@@ -45,6 +46,7 @@ import qualified Lex as L
 	KwRead {Token.KwRead}
 	KwPrint {Token.KwPrint}
 	KwReturn {Token.KwReturn}
+	KwDo {Token.KwDo}
   PVirg {Token.PVirg}
   Virg {Token.Virg}
 
@@ -94,6 +96,8 @@ ListaCmd : ListaCmd Comando { $1 ++ [$2] }
 
 Comando :   If { $1}
             | While { $1 }
+            | DoWhile { $1 }
+            | MinusEq { $1 }
             | Atrib { $1 }
             | Read { $1 }
             | Print { $1 }
@@ -105,6 +109,10 @@ If: KwIf LPar ExprL RPar Bloco {AST.If $3 $5 []}
     | KwIf LPar ExprL RPar Bloco KwElse Bloco {AST.If $3 $5 $7}
 
 While : KwWhile LPar ExprL RPar Bloco {AST.While $3 $5}
+
+DoWhile : KwDo Bloco KwWhile LPar ExprL RPar PVirg {AST.DoWhile $2 $5}
+
+MinusEq : ID OPMinusEq Expr PVirg {AST.Atrib $1 (AST.Sub (AST.IdVar $1) $3)}
 
 Atrib : ID OPAtrib Expr PVirg {AST.Atrib $1 $3}
       | ID OPAtrib LITString PVirg {AST.Atrib $1 (AST.Lit $3)}

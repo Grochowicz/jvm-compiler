@@ -57,9 +57,7 @@ jtipo TVoid   = "V"
 descritor :: [Var] -> Tipo -> String
 descritor params tret = "(" ++ concat [jtipo t | (_ :#: (t, _)) <- params] ++ ")" ++ jtipo tret
 
--- ---------------------------------------------------------------------
--- Instrucoes auxiliares
--- ---------------------------------------------------------------------
+
 
 genInt :: Integer -> String
 genInt i
@@ -205,6 +203,16 @@ genCmd c tab fun (While e b) = do
   return (li ++ ":\n" ++ e' ++ lv ++ ":\n" ++ b' ++
           "\tgoto " ++ li ++ "\n" ++ lf ++ ":\n")
 
+genCmd c tab fun (DoWhile b e) = do
+  --li <- novoLabel
+  lv <- novoLabel
+  lf <- novoLabel
+  e' <- genExprL c tab fun lv lf e
+  b' <- genBloco c tab fun b
+  --return (lv ++ ":\n" ++ b' ++ li ++ ":\n" ++ e' ++ lf ++ ":\n")
+  return (lv ++ ":\n" ++ b' ++ e' ++ lf ++ ":\n")
+
+
 genCmd c tab fun (Ret Nothing)  = return "\treturn\n"
 genCmd c tab fun (Ret (Just e)) = do
   (t, e') <- genExpr c tab fun e
@@ -224,11 +232,11 @@ genBloco c tab fun b = do {cs <- mapM (genCmd c tab fun) b; return (concat cs)}
 
 
 
-retornoFinal :: Tipo -> String
-retornoFinal TVoid   = "\treturn\n"
-retornoFinal TInt    = "\ticonst_0\n\tireturn\n"
-retornoFinal TDouble = "\tdconst_0\n\tdreturn\n"
-retornoFinal TString = "\tldc \"\"\n\tareturn\n"
+--retornoFinal :: Tipo -> String
+--retornoFinal TVoid   = "\treturn\n"
+--retornoFinal TInt    = "\ticonst_0\n\tireturn\n"
+--retornoFinal TDouble = "\tdconst_0\n\tdreturn\n"
+--retornoFinal TString = "\tldc \"\"\n\tareturn\n"
 
 genFuncao :: String -> [Funcao] -> (Id, [Var], Bloco) -> State Int String
 genFuncao c fun (nome, vars, bloco) = do
@@ -236,7 +244,8 @@ genFuncao c fun (nome, vars, bloco) = do
   let Just (_, tret) = lookupFun nome fun
   cab   <- genFunCab c fun nome 20 nlocais
   corpo <- genBloco c tab fun bloco
-  return (cab ++ corpo ++ retornoFinal tret ++ ".end method\n\n")
+  --return (cab ++ corpo ++ retornoFinal tret ++ ".end method\n\n")
+  return (cab ++ corpo ++ ".end method\n\n")
 
 genMain :: String -> [Funcao] -> [Var] -> Bloco -> State Int String
 genMain c fun vars bloco = do
